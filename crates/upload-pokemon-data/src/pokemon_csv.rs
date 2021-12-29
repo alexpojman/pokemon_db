@@ -1,13 +1,13 @@
-use serde::{Deserialize, de};
+use serde::{de, Deserialize};
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Clone)]
 pub struct PokemonCsv {
     pub name: String,
     pub pokedex_id: u16,
     #[serde(deserialize_with = "from_comma_separated")]
     pub abilities: Vec<String>,
     #[serde(deserialize_with = "from_comma_separated")]
-    pub typing:  Vec<String>,
+    pub typing: Vec<String>,
     pub hp: u8,
     pub attack: u8,
     pub defense: u8,
@@ -32,7 +32,7 @@ pub struct PokemonCsv {
     pub base_experience: u16,
     pub capture_rate: u8,
     #[serde(deserialize_with = "from_comma_separated")]
-    pub egg_groups:  Vec<String>,
+    pub egg_groups: Vec<String>,
     pub base_happiness: u8,
     pub evolves_from: Option<String>,
     pub primary_color: String,
@@ -57,14 +57,11 @@ pub struct PokemonCsv {
     pub fairy_attack_effectiveness: f32,
 }
 
-fn from_capital_bool<'de, D>(
-    deserializer: D,
-) -> Result<bool, D::Error>
+fn from_capital_bool<'de, D>(deserializer: D) -> Result<bool, D::Error>
 where
     D: de::Deserializer<'de>,
 {
-    let s: &str =
-        de::Deserialize::deserialize(deserializer)?;
+    let s: &str = de::Deserialize::deserialize(deserializer)?;
 
     match s {
         "True" => Ok(true),
@@ -73,9 +70,7 @@ where
     }
 }
 
-fn from_comma_separated<'de, D>(
-    deserializer: D
-) -> Result<Vec<String>, D::Error>
+fn from_comma_separated<'de, D>(deserializer: D) -> Result<Vec<String>, D::Error>
 where
     D: de::Deserializer<'de>,
 {
