@@ -1,11 +1,11 @@
 use crate::pokemon_csv::PokemonCsv;
-use std::fmt;
 use inflector::Inflector;
 use ksuid::Ksuid;
 use sqlx::{
-    database::HasArguments, encode::IsNull, Encode, MySql,
-    MySqlPool, Type, Database, mysql::MySqlTypeInfo
+    database::HasArguments, encode::IsNull, mysql::MySqlTypeInfo, Database, Encode, MySql,
+    MySqlPool, Type,
 };
+use std::fmt;
 
 #[derive(Debug)]
 pub struct PokemonTableRow {
@@ -65,10 +65,7 @@ impl PokemonId {
 }
 
 impl fmt::Debug for PokemonId {
-    fn fmt(
-        &self, 
-        f: &mut fmt::Formatter<'_>
-    ) -> fmt::Result {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         f.debug_tuple("PokemonId")
             .field(&self.0.to_base62())
             .finish()
@@ -121,7 +118,7 @@ impl From<PokemonCsv> for PokemonTableRow {
             dark_attack_effectiveness,
             steel_attack_effectiveness,
             fairy_attack_effectiveness,
-        } : PokemonCsv
+        }: PokemonCsv,
     ) -> Self {
         let id = PokemonId::new();
         let slug = name.to_kebab_case();
@@ -215,7 +212,7 @@ pub async fn insert_pokemon(
         dark_attack_effectiveness,
         steel_attack_effectiveness,
         fairy_attack_effectiveness,
-    }: &PokemonTableRow
+    }: &PokemonTableRow,
 ) -> Result<sqlx::mysql::MySqlQueryResult, sqlx::Error> {
     sqlx::query!(
         r#"
@@ -264,48 +261,50 @@ pub async fn insert_pokemon(
          )
         VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
             "#,
-            id,
-            slug,
-            name,
-            pokedex_id,
-            hp,
-            attack,
-            defense,
-            special_attack,
-            special_defense,
-            speed,
-            height,
-            weight,
-            generation,
-            female_rate,
-            genderless,
-            legendary_or_mythical,
-            is_default,
-            forms_switchable,
-            base_experience,
-            capture_rate,
-            base_happiness,
-            primary_color,
-            number_pokemon_with_typing,
-            normal_attack_effectiveness,
-            fire_attack_effectiveness,
-            water_attack_effectiveness,
-            electric_attack_effectiveness,
-            grass_attack_effectiveness,
-            ice_attack_effectiveness,
-            fighting_attack_effectiveness,
-            poison_attack_effectiveness,
-            ground_attack_effectiveness,
-            fly_attack_effectiveness,
-            psychic_attack_effectiveness,
-            bug_attack_effectiveness,
-            rock_attack_effectiveness,
-            ghost_attack_effectiveness,
-            dragon_attack_effectiveness,
-            dark_attack_effectiveness,
-            steel_attack_effectiveness,
-            fairy_attack_effectiveness, 
-    ).execute(pool).await
+        id,
+        slug,
+        name,
+        pokedex_id,
+        hp,
+        attack,
+        defense,
+        special_attack,
+        special_defense,
+        speed,
+        height,
+        weight,
+        generation,
+        female_rate,
+        genderless,
+        legendary_or_mythical,
+        is_default,
+        forms_switchable,
+        base_experience,
+        capture_rate,
+        base_happiness,
+        primary_color,
+        number_pokemon_with_typing,
+        normal_attack_effectiveness,
+        fire_attack_effectiveness,
+        water_attack_effectiveness,
+        electric_attack_effectiveness,
+        grass_attack_effectiveness,
+        ice_attack_effectiveness,
+        fighting_attack_effectiveness,
+        poison_attack_effectiveness,
+        ground_attack_effectiveness,
+        fly_attack_effectiveness,
+        psychic_attack_effectiveness,
+        bug_attack_effectiveness,
+        rock_attack_effectiveness,
+        ghost_attack_effectiveness,
+        dragon_attack_effectiveness,
+        dark_attack_effectiveness,
+        steel_attack_effectiveness,
+        fairy_attack_effectiveness,
+    )
+    .execute(pool)
+    .await
 }
 
 impl<'q> Encode<'q, MySql> for PokemonId {
